@@ -1,0 +1,8 @@
+<body>
+  <app-nav-menu></app-nav-menu>
+  <app-toaster-container></app-toaster-container>
+  <ng-progress #progressBar (started)="onStarted()" (completed)="onCompleted()"></ng-progress>
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
+</body>

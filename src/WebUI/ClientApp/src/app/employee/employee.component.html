@@ -1,0 +1,148 @@
+
+<p *ngIf="!vm"><em>Loading...</em></p>
+<div *ngIf="mode=='list'">
+  <h2>List Of Employee</h2>
+  <hr  />
+  <div class="row mt50">
+    <div class="col-md-12">
+      <button class="btn btn-default float-right" title="Add Employee" (click)="newEmployeeAdd()">
+        <fa-icon [icon]="faPlus"></fa-icon> Add Employee
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Mobile</th>
+            <th scope="col">Active</th>
+            <th scope="col">Action</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of vm; index as i">
+            <th scope="row">{{i+1}}</th>
+            <td>{{employee.firstName}}</td>
+            <td>{{employee.lastName}}</td>
+            <td>{{employee.email}}</td>
+            <td>{{employee.phoneNumber}}</td>
+            <td>{{employee.mobile}}</td>
+            <td>{{employee.isActive ? 'Yes' : 'No'}}</td>
+            <td>
+              <button class="btn btn-danger btn-xs"
+                      (click)="confirmDeleteEmployee(deleteEmployeeModalTemplate,employee)">
+                <fa-icon [icon]="faRecycle"></fa-icon>
+              </button>
+              <button class="btn btn-primary btn-xs" (click)="editEmployee(employee.id)">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div *ngIf="mode=='create'|| mode =='edit'">
+  <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+    <h2> {{mode=='create' ? 'Add Employee' : 'Edit Employee'}}</h2>
+    <hr/>
+    <div class="row mt50">
+      <div class="col-md-6">
+        <div class="form-group ">
+          <label>First Name</label>
+          <input type="text" name="firstName" class="form-control"
+                 [(ngModel)]="vModel.firstName" #firstName="ngModel"
+                 [ngClass]="{ 'is-invalid': f.submitted && firstName.invalid }" required>
+          <div *ngIf="f.submitted && firstName.invalid" class="invalid-feedback">
+            <div *ngIf="firstName.errors.required">First Name is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="lastName" class="form-control"
+                 [(ngModel)]="vModel.lastName" #lastName="ngModel"
+                 [ngClass]="{ 'is-invalid': f.submitted && lastName.invalid }" required>
+          <div *ngIf="f.submitted && lastName.invalid" class="invalid-feedback">
+            <div *ngIf="lastName.errors.required">Last Name is required</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="text" name="email" class="form-control" [(ngModel)]="vModel.email"
+                 #email="ngModel" [ngClass]="{ 'is-invalid': f.submitted && email.invalid }" required email>
+          <div *ngIf="f.submitted && email.invalid" class="invalid-feedback">
+            <div *ngIf="email.errors.required">Email is required</div>
+            <div *ngIf="email.errors.email">Email must be a valid email address</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Phone No.</label>
+          <input type="text" name="phoneNumber" class="form-control"
+                 [(ngModel)]="vModel.phoneNumber" #phoneNumber="ngModel"
+                 [ngClass]="{ 'is-invalid': f.submitted && phoneNumber.invalid }" required>
+          <div *ngIf="f.submitted && phoneNumber.invalid" class="invalid-feedback">
+            <div *ngIf="phoneNumber.errors.required">Phone number is required</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Mobile No.</label>
+          <input type="text" name="mobile" class="form-control"
+                 [(ngModel)]="vModel.mobile" #mobile="ngModel">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Is Active</label>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" id="IsActive"
+                   [(ngModel)]="vModel.isActive"
+                   [ngModelOptions]="{standalone: true}" class="custom-control-input" /> `
+            <label class="custom-control-label" for="IsActive"></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="text-right">
+      <button class="btn btn-default" (click)="newEmployeeCancelled()">Cancel</button>
+      <button class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</div>
+<ng-template #deleteEmployeeModalTemplate>
+  <div class="modal-header clearfix">
+    <h4 class="modal-title float-left">Delete "{{ selectedEmployee?.firstName +' ' +selectedEmployee?.lastName }}"?</h4>
+    <button type="button" class="close float-right" aria-label="Close" (click)="deleteEmployeeModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Selected employee will be permanently deleted. </p>
+  </div>
+  <div class="modal-footer">
+    <div class="text-right">
+      <button type="button" class="btn btn-default" (click)="deleteEmployeeModalRef.hide()">Cancel</button>
+      <button type="button" class="btn btn-danger" (click)="deleteEmployeeConfirmed()">Delete</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,33 @@
+a {
+  color: #0366d6;
+}
+
+code {
+  color: #e01a76;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.toast {
+  opacity: 1
+}
+
+  .toast[_ngcontent-ng-cli-universal-c56] {
+    height: auto !important;
+  }
+
+.btn-xs {
+  width: 32px;
+  height: 32px;
+  font-size: 10px;
+  margin-right:2px;
+}
+
+.mt150{margin-top:150px}
+.mt50 {
+  margin-top: 50px
+}
