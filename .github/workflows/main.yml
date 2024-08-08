@@ -35,7 +35,9 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: List Branches
+        run: |
+          git branch -a
       - name: Merge release into main
         env:
           GIT_USER_NAME: github-actions
