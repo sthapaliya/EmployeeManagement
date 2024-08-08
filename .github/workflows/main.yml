@@ -47,6 +47,25 @@ jobs:
         run: |
           git config --global user.name "${GIT_USER_NAME}"
           git config --global user.email "${GIT_USER_EMAIL}"
+
+             git fetch origin
+          git branch -a
+          git branch -r
+
+          # Ensure the branch exists
+          if git show-ref --quiet refs/heads/main; then
+            echo "Branch 'main' exists"
+          else
+            echo "Branch 'main' does not exist"
+            exit 1
+          fi
+
+          if git show-ref --quiet refs/heads/release; then
+            echo "Branch 'release' exists"
+          else
+            echo "Branch 'release' does not exist"
+            exit 1
+          fi
           
           # Check out the main branch
           git checkout master
