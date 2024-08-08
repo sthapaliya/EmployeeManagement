@@ -1,0 +1,57 @@
+
+name: Merge Release to Main
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - release
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH for Deploy Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Get PR Commit Message
+        id: get-pr-message
+        run: |
+          # Fetch the PR number from the GitHub context
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+
+          # Use GitHub CLI to get the PR commit message
+          COMMIT_MESSAGE=$(gh pr view "$PR_NUMBER" --json title --jq '.title')
+          
+          # Set the commit message as an environment variable
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge release into main
+        env:
+          GIT_USER_NAME: github-actions
+          GIT_USER_EMAIL: actions@github.com
+          COMMIT_MESSAGE: ${{ env.COMMIT_MESSAGE }}
+        run: |
+          git config --global user.name "${GIT_USER_NAME}"
+          git config --global user.email "${GIT_USER_EMAIL}"
+          
+          # Check out the main branch
+          git checkout master
+          # Pull latest changes from the remote
+          git pull origin main
+          
+          # Merge the release branch into main
+          git merge --no-ff release -m "$COMMIT_MESSAGE"
+          
+          # Push changes to the main branch
+          git push origin master
